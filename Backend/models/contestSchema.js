@@ -28,6 +28,11 @@ const contestSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Club"
     },
+    status:{
+        type:String,
+        default:"UpComing",
+        enum:["UpComing","Completed"]
+    },
     createdAt: {
         type: Date,
         default: Date.now,

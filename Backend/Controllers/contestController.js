@@ -6,7 +6,10 @@ import { v2 as cloudinary } from "cloudinary";
 
 
 export const createContest = catchAsyncError(async (req,res,next)=> {
-   
+   const {id}=req.params;
+    if(!mongoose.Types.ObjectId.isValid(id))
+        return next(new ErrorHandler("Id format is invalid",400));
+
     if(!req.files || Object.keys(req.files).length === 0 )
         return next(new ErrorHandler("Contest Image is Needed",400));
      const {contestPicture}=req.files;
@@ -30,7 +33,7 @@ export const createContest = catchAsyncError(async (req,res,next)=> {
         title,description,date,contestPicture:{
             public_id:cloudinaryResponse.public_id,
             url:cloudinaryResponse.secure_url
-        }
+        },clubId:id
     });
     res.status(201).json({
         success:true,
@@ -130,3 +133,27 @@ export const unApplyContest = catchAsyncError(async (req,res,next) => {
         unapply
     });
 });
+
+export const upComingContest=catchAsyncError(async(req,res,next) =>{
+    const {id}=req.params;
+    if(!mongoose.Types.ObjectId.isValid(id))
+        return next(new ErrorHandler("Id format is invalid",400));
+    const contests=await Contest.find({clubId:id,status:"UpComing"});
+    res.status(201).json({
+        success:true,
+        message:"Upcoming contests are fetched",
+        contests
+    });
+});
+
+export const pastContest=catchAsyncError(async(req,res,next) =>{
+    const {id}=req.params;
+    if(!mongoose.Types.ObjectId.isValid(id))
+        return next(new ErrorHandler("Id format is invalid",400));
+    const contests=await Contest.find({clubId:id,status:"Completed"});
+    res.status(201).json({
+        success:true,
+        message:"Completed contests are fetched",
+        contests
+    });
+})

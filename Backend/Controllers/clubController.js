@@ -140,5 +140,47 @@ export const removeMember=catchAsyncError(async(req,res,next) =>{
     });
 });
 
+export const changeDp=catchAsyncError(async(req,res,next) =>{
+    const {id}=req.params;
+    if(!mongoose.Types.ObjectId.isValid(id))
+        return next(new ErrorHandler("Id format is invalid",400));
+    if(!req.files || Object.keys(req.files).length === 0 )
+        return next(new ErrorHandler("Club Picture is Needed",400));
+     const {clubImage}=req.files;
+     const allowedFormart=["image/png","image/jpeg","image/webp"];
+     if(!allowedFormart.includes(clubImage.mimetype))
+         return next(new ErrorHandler("Club Picture format not supported",400));
+
+     const cloudinaryResponse= await cloudinary.uploader.upload(
+        clubImage.tempFilePath,
+        {
+            folder:"Club_Image"
+        }
+    );
+    if(!cloudinaryResponse || cloudinaryResponse.error){
+        console.log("Cloudinary Error : ", cloudinaryResponse.error || "UnKnown Cloudinary Error Happend!");
+        return next(new ErrorHandler("Failed to upload image top cloudinary",400));
+    }
+    const filter={_id:id};
+    const data = {
+        $set: {
+          clubImage:{
+        public_id:cloudinaryResponse.public_id,
+        url:cloudinaryResponse.secure_url
+    }
+        }
+      };
+    const updatedImage=await Club.updateOne(filter,data);
+    res.status(201).json({
+        success:true,
+        message:"Club Image Updated Successfully",
+        updatedImage
+    })
+})
+
+
+
+
+
 
 
