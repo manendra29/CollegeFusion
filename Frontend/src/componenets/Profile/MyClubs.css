@@ -1,0 +1,31 @@
+
+.clubs-section {
+    margin-top: 40px;
+  }
+  
+  .clubs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+  }
+  
+  .club-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .club-card:hover {
+    transform: translateY(-4px);
+  }
+  
+  .club-image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.5s ease;
+  }
+  
+  .club-card:hover .club-image {
+    transform: scale(1.05);
+  }

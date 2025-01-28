@@ -1,0 +1,384 @@
+// ProfilePage.jsx
+import React, { useContext, useEffect, useState } from 'react';
+import './ProfilePage.css'
+import {Context} from "../../main"
+import { 
+  Container,
+  Box,
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  Paper,
+  Input
+} from '@mui/material';
+import { 
+  CameraAlt,
+  Edit,
+  Add,
+  Person,
+  CloseFullscreen
+} from '@mui/icons-material';
+import axios from "axios";
+import toast from 'react-hot-toast';
+import Post from '../Post/Post';
+import { useNavigate } from 'react-router-dom';
+
+const ProfilePage = ({ isOwner = true }) => {
+  const [showFollowers, setShowFollowers] = useState(false);
+  const [showFollowing, setShowFollowing] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+    const [clubs,setClubs]=useState([]);
+    const [posts,setPosts]=useState([]);
+    const [cover,setCover]=useState(null);
+    const navigateTo=useNavigate();
+    const [dp,setDp]=useState(null);
+
+
+    const [formData,setFormData]=useState({
+        title:"",
+        desc:"",
+        file:null
+    });
+
+    const handleFileChange = (e) => {
+        setFormData({
+          ...formData,
+          file: e.target.files[0],
+        });
+      };
+
+
+      const handleCoverChange = (e) => {
+        const file=e.target.files[0];
+        setCover(file);
+        if(file)
+            handleCoverChangeButton(file);
+      };
+
+      const handleDpChange=(e)=>{
+        const file=e.target.files[0];
+        setDp(file);
+        if(file)
+            handleDpChangeButton(file);
+      }
+
+      const handleDpChangeButton=async(file)=>{
+        try {
+            const response=await axios.put("http://localhost:5000/api/v1/user/dp",{
+                profilePicture:file
+            },{
+                withCredentials:true,
+                headers:{
+                    "Content-Type":"multipart/form-data"
+                }
+            });
+            console.log("Done Bro");
+            toast.success("Profile picture updated successfully");
+            navigateTo("/myprofile");
+        } catch (error) {
+            console.log(error);
+            toast.error("uploading profile picture fail");
+        }
+      }
+
+
+
+     
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+      };
+
+  const {isAuthorized,user}=useContext(Context);
+
+useEffect(() =>{
+    try {
+         const fetch=async()=>{
+        const response=await axios.get("http://localhost:5000/api/v1/user/myclub",{
+            withCredentials:true,
+            headers:{
+                "Content-Type":"application/json"
+            }
+        });
+        setClubs(response.data.clubs);
+    }
+    fetch();
+    } catch (error) {
+        console.log(error);
+    }
+},[]);
+
+useEffect(() =>{
+    try {
+         const fetch=async()=>{
+        const response=await axios.get("http://localhost:5000/api/v1/user/myposts",{
+            withCredentials:true,
+            headers:{
+                "Content-Type":"application/json"
+            }
+        });
+        setPosts(response.data.posts);
+    }
+    fetch();
+    } catch (error) {
+        console.log(error);
+    }
+},[]);
+
+const followersButton=async()=>{
+    try {
+       
+    } catch (error) {
+        
+    }
+}
+
+
+const handlePostButton=async()=>{
+    try {
+        const response=await axios.post("http://localhost:5000/api/v1/post/createpost",{
+            title:formData.title,
+            description:formData.desc,
+            postImage:formData.file
+        },{
+            withCredentials:true,
+            headers:{
+                "Content-Type":"multipart/form-data"
+            }
+        });
+        toast.success("Post has been posted successfully");
+        console.log("Post has been posted successfully");
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const handleCoverChangeButton=async(file)=>{
+    try {
+        const response=await axios.put("http://localhost:5000/api/v1/user/cover",{
+            coverPicture:file
+        },{
+            withCredentials:true,
+            headers:{
+                "Content-Type":"multipart/form-data"
+            }
+        });
+        console.log("Done Bro");
+        toast.success("Cover picture updated successfully");
+        navigateTo("/myprofile");
+    } catch (error) {
+        console.log(error);
+        toast.error("uploading cover picture fail");
+    }
+}
+
+
+
+  return (
+    <Container className="profile-container">
+      <Box className="cover-section">
+        <img 
+          src={user.coverPicture?.url  ?? "/images/cover.png"}
+          alt="Cover"
+          className="cover-image"
+        />
+        <div className="cover-overlay" />
+        {isOwner && (
+            <div>
+  <label
+    htmlFor="cover-upload"
+    style={{
+      position: 'absolute',
+      top: 16,
+      right: 16,
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      padding: '8px',
+      borderRadius: '50%',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+    }}
+  >
+    <CameraAlt style={{ fontSize: '24px' }} />
+    <input
+      id="cover-upload"
+      type="file"
+      name="cover"
+      onChange={handleCoverChange}
+      style={{ display: 'none' }} 
+    />
+  </label>
+
+  <button
+    type="button"
+    style={{
+      marginTop: '80px',
+      padding: '10px 16px',
+      backgroundColor: '#007bff',
+      color: '#fff',
+      border: 'none',
+      borderRadius: '4px',
+      cursor: 'pointer',
+    }}
+  >
+    Submit
+  </button>
+</div>
+        )}
+      </Box>
+
+      <Box className="profile-picture-section">
+        <div className="profile-picture-container">
+          <img 
+            src={user.profilePicture?.url  ??  "/images/noPP.jpg"} 
+            alt="Profile"
+            className="profile-picture"
+          />
+          {isOwner && (
+            <div>
+  <label
+    htmlFor="dp-upload"
+    style={{
+      position: 'absolute',
+      top: 110,
+      right: 16,
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      padding: '4px',
+      borderRadius: '50%',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+    }}
+  >
+    <CameraAlt style={{ fontSize: '24px' }} />
+    <input
+      id="dp-upload"
+      type="file"
+      name="dp"
+      onChange={handleDpChange}
+      style={{ display: 'none' }} 
+    />
+  </label>
+</div>
+          )}
+        </div>
+      </Box>
+
+      {/* Profile Info */}
+      <Box className="profile-info-section">
+        <Typography variant="h4" className="profile-name">
+          {user.name}
+        </Typography>
+        <Typography className="profile-details">
+          {user.college}
+        </Typography>
+
+        <Box className="stats-container">
+          <Button 
+            variant="text" 
+            onClick={() => setShowFollowers(true)}
+            sx={{ fontSize: '1.1rem' }}
+          >
+            <strong>{user.followers.length}</strong>&nbsp;Followers
+          </Button>
+          <Button 
+            variant="text" 
+            onClick={() => setShowFollowing(true)}
+            sx={{ fontSize: '1.1rem' }}
+          >
+            <strong>{user.following.length}</strong>&nbsp;Following
+          </Button>
+        </Box>
+
+        {isOwner ? (
+          <Button 
+            variant="outlined" 
+            startIcon={<Edit />}
+            sx={{ mt: 2 }}
+          >
+            Edit Profile
+          </Button>
+        ) : (
+          <Button
+            variant={isFollowing ? "outlined" : "contained"}
+            onClick={() => setIsFollowing(!isFollowing)}
+            startIcon={<Person />}
+            sx={{ mt: 2 }}
+          >
+            {isFollowing ? 'Unfollow' : 'Follow'}
+          </Button>
+        )}
+      </Box>
+
+   
+      {clubs.length > 0 && (
+        <Box className="clubs-section">
+          <Typography variant="h5" gutterBottom>
+            Clubs
+          </Typography>
+          <Box className="clubs-grid">
+          {clubs.length===0 && <h3>No Club is There</h3>}
+            {clubs.map((club, index) => (
+              <Card key={index} className="club-card">
+                <CardMedia
+                  component="img"
+                  image={club.image}
+                  alt={club.name}
+                  className="club-image"
+                />
+                <CardContent>
+                  <Typography variant="h6" align="center">
+                    {club.name}
+                  </Typography>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+        </Box>
+      )}
+
+      {/* New Post Section */}
+     
+      <div className="feed">
+  {posts.length===0 && <h1 style={{display:"flex",justifyContent:"center",alignItems:"center",height:"70vh"}}>No Post Availabel !</h1>}
+    {posts.map(post => (
+      <Post key={post._id} post={post} />
+    ))}
+  </div>
+
+      {/* Dialogs */}
+      <Dialog 
+        open={showFollowers} 
+        onClose={() => setShowFollowers(false)}
+      >
+        <DialogTitle >Followers</DialogTitle>
+        <DialogContent onClick={followersButton}>
+        <p>This is followers list</p>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog 
+        open={showFollowing} 
+        onClose={() => setShowFollowing(false)}
+      >
+        <DialogTitle>Following</DialogTitle>
+        <DialogContent>
+          <p>Following list...</p>
+        </DialogContent>
+      </Dialog>
+    </Container>
+  );
+};
+
+export default ProfilePage;

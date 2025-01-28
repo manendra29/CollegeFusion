@@ -52,7 +52,8 @@ const userSchema=new mongoose.Schema({
     }],
     role:{
       type:String,
-      enum:["Student","Teacher","Hod","Admin"]
+      default:"Other",
+      enum:["Other","Admin"]
     },
     ranking:Number,
     createdAt: {

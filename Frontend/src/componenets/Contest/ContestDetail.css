@@ -1,0 +1,101 @@
+.contest-detail-container {
+    padding: 24px;
+  }
+  
+  .contest-detail-paper {
+    padding: 24px;
+    margin-top: 24px;
+  }
+  
+  .contest-detail-image {
+    width: 100%;
+    max-height: 400px;
+    object-fit: cover;
+    margin-bottom: 24px;
+    border-radius: 8px;
+  }
+  
+  .contest-detail-title {
+    margin-bottom: 16px !important;
+    color: #333;
+  }
+  
+  .contest-detail-date {
+    color: #666;
+    margin-bottom: 16px !important;
+  }
+  
+  .contest-detail-description {
+    margin-bottom: 24px !important;
+    line-height: 1.6;
+  }
+  
+  .contest-link {
+    display: inline-block;
+    margin-bottom: 32px;
+    color: #1976d2;
+    text-decoration: none;
+  }
+  
+  .contest-link:hover {
+    text-decoration: underline;
+  }
+  
+  .leaderboard-title {
+    margin-bottom: 16px !important;
+    color: #333;
+  }
+  
+  .leaderboard-table {
+    margin-bottom: 24px;
+  }
+
+
+  .center-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .apply-button {
+    color: white;
+    text-transform: none;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .apply-button.apply {
+    background-color: #4caf50; /* Green */
+  }
+  
+  .apply-button.unapply {
+    background-color: #d32f2f; /* Red */
+  }
+  
+  .apply-button:hover {
+    opacity: 0.9;
+  }
+  
+
+  
+
+  @media (max-width: 600px) {
+    .contest-detail-container,
+    .create-contest-container,
+    .contest-list-container {
+      padding: 16px;
+    }
+  
+    .contest-detail-paper,
+    .create-contest-paper {
+      padding: 16px;
+    }
+  
+    .contest-detail-image {
+      max-height: 300px;
+    }
+  }

@@ -1,0 +1,12 @@
+.contest-list-container {
+    padding: 24px;
+  }
+  
+  .section-title {
+    margin-bottom: 24px !important;
+    color: #333;
+  }
+  
+  .contests-grid {
+    margin-bottom: 48px;
+  }

@@ -5,6 +5,8 @@ import { sendEmail } from "../utils/sendEmail.js";
 import { generateJwtToken } from "../utils/jwtToken.js";
 import {v2 as cloudinary} from "cloudinary"
 import { Post } from "../models/postSchema.js";
+import mongoose from "mongoose";
+import { Club } from "../models/clubSchema.js";
 
 
 const otpStorage=new Map();
@@ -28,8 +30,8 @@ export const generateOTP=catchAsyncError(async(req,res,next) =>{
 
 
 export const register=catchAsyncError(async(req,res,next) =>{
-    const {username,email,password,role,college,department,otp}=req.body;
-    if(!username || !email || !password || !role || !college || !department || !otp)
+    const {username,email,password,college,department,otp}=req.body;
+    if(!username || !email || !password || !college || !department || !otp)
         return next(new ErrorHandler("Please provide all details!",400));
 
     const checkUser=await User.find({email});
@@ -58,7 +60,6 @@ export const register=catchAsyncError(async(req,res,next) =>{
     username,
     email,
     password,
-    role,
     college,
     department,
   });
@@ -246,8 +247,11 @@ export const search = catchAsyncError(async (req,res,next) => {
 });
 
 export const allFeed = catchAsyncError(async(req,res,next) => {
-    const sevenDaysAgo = Date.now() - 604800000;
-    const posts = await Post.find({ createdAt: { $gte: sevenDaysAgo } });
+    // const sevenDaysAgo = Date.now() - 604800000;
+    // const posts = await Post.find({ createdAt: { $gte: sevenDaysAgo } });
+    const posts = await Post.find();
+    posts.reverse();
+
     res.status(201).json({
         success:true,
         message:"Posts Fetched!",
@@ -257,12 +261,9 @@ export const allFeed = catchAsyncError(async(req,res,next) => {
 
 export const myFeed = catchAsyncError(async(req,res,next) => {
     const followings = req.user.following;
-    console.log(followings);
-    const sevenDaysAgo = Date.now() - 604800000; 
+    // const sevenDaysAgo = Date.now() - 604800000; 
     const posts = await Post.find({ 
-    createdAt: { $gte: sevenDaysAgo }, 
-    userId: { $in: [followings] }})
-    console.log(posts)
+    userId: { $in:followings }})
     res.status(201).json({
         success:true,
         message:"my Posts Fetched!",
@@ -279,4 +280,101 @@ export const mypost=catchAsyncError( async (req,res,next)=>{
     });
 });
 
+
+export const getUser=catchAsyncError(async(req,res,next) =>{
+    const {id}=req.params;
+    if(!mongoose.Types.ObjectId.isValid(id))
+        return next(new ErrorHandler("Id format is invalid",400));
+    let user=await User.findById(id);
+    if(!user)
+        user=await Club.findById(id);
+    res.status(200).json({
+        success:true,
+        message:"User Fetched",
+        user
+    });
+});
+
+
+export const myClub = catchAsyncError(async (req, res, next) => {
+    
+      const clubs = await Club.find({ members: { $in: req.user._id } });
+      
+      res.status(200).json({
+        success: true,
+        message: "User's clubs fetched successfully",
+        clubs,
+      });
+  });
+
+  export const friendPost=catchAsyncError(async(req,res,next) =>{
+    const {id}=req.params;
+    if(!mongoose.Types.ObjectId.isValid(id))
+        return next(new ErrorHandler("Id format is invalid",400));
+    const posts=await Post.find({userId:id});
+    res.status(201).json({
+        success:true,
+        message:"Friend's Post",
+        posts
+    });
+})
+
+export const friendClub=catchAsyncError(async(req,res,next) =>{
+        const {id}=req.params;
+        if(!mongoose.Types.ObjectId.isValid(id))
+            return next(new ErrorHandler("Id format is invalid",400));
+        const clubs=await Club.find({ members: { $in: id } });
+        res.status(201).json({
+            success:true,
+            message:"Friend's Club fetched",
+            clubs
+        })
+})
+
+export const allFollowers=catchAsyncError(async(req,res,next) =>{
+    const {id}=req.params;
+    if(!mongoose.Types.ObjectId.isValid(id))
+        return next(new ErrorHandler("Id format is invalid",400));
+    const user=await User.findById(id);
+    let followers=await Promise.all(user.followers.map(async(u)=>{
+        const newUser=await User.findById(u);
+        return newUser;
+    }))
+    res.status(201).json({
+        success:true,
+        message:"Followers List",
+        followers
+    });
+})
+
+export const allFollowing=catchAsyncError(async(req,res,next) =>{
+    const {id}=req.params;
+    if(!mongoose.Types.ObjectId.isValid(id))
+        return next(new ErrorHandler("Id format is invalid",400));
+    const user=await User.findById(id);
+
+    let following = await Promise.all(
+        user.following.map(async (u) => {
+            const newUser = await User.findById(u);
+            return newUser; 
+        })
+    );
+    res.status(201).json({
+        success:true,
+        message:"Following List",
+        following
+    });
+})
+
+export const searchPeron=catchAsyncError(async(req,res,next) =>{
+    const {name}=req.query;
+    const users = await User.find({ username: { $regex:name, $options: "i" } });
+    res.status(201).json({
+        success:true,
+        message:"Person Searched",
+        users
+    });
+})
+
+  
 

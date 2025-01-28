@@ -9,6 +9,7 @@ import userRoute from "./Routes/userRoute.js";
 import postRoute from "./Routes/postRoute.js";
 import contestRoute from "./Routes/contestRoute.js"
 import clubRoute from "./Routes/clubRoute.js";
+import adminRoute from "./Routes/adminRoute.js";
 
 config({
     path:"./config/config.env"
@@ -33,6 +34,7 @@ app.use("/api/v1/user",userRoute);
 app.use("/api/v1/post",postRoute);
 app.use("/api/v1/contest",contestRoute);
 app.use("/api/v1/club",clubRoute);
+app.use("/api/v1/admin",adminRoute);
 
 
 

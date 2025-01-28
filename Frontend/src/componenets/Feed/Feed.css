@@ -1,0 +1,36 @@
+
+
+   .feed {
+    margin: 84px 260px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 84px auto;
+  }
+  
+  
+  @media (max-width: 1200px) {
+    .feed {
+      margin-right: 20px;
+    }
+  }
+  
+  @media (max-width: 1024px) {
+    .feed {
+      margin-left: 92px;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .feed {
+      margin: 84px 20px;
+    }
+    
+    .post-image {
+      height: 300px;
+    }
+    
+    .post {
+      padding: 16px;
+    }
+  }
+  

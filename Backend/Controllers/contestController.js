@@ -3,13 +3,17 @@ import { catchAsyncError } from "../Middleware/catchAsyncError.js";
 import ErrorHandler from "../Middleware/error.js";
 import {Contest} from "../models/contestSchema.js";
 import { v2 as cloudinary } from "cloudinary";
+import { Club } from "../models/clubSchema.js";
 
 
 export const createContest = catchAsyncError(async (req,res,next)=> {
-   const {id}=req.params;
+    const {id}=req.params;
+
     if(!mongoose.Types.ObjectId.isValid(id))
         return next(new ErrorHandler("Id format is invalid",400));
-
+    const club = await Club.findById(id);
+    if(!club.clubLead.equals(req.user._id))
+        return next(new ErrorHandler("Only club lead can update club",400));
     if(!req.files || Object.keys(req.files).length === 0 )
         return next(new ErrorHandler("Contest Image is Needed",400));
      const {contestPicture}=req.files;
@@ -30,10 +34,10 @@ export const createContest = catchAsyncError(async (req,res,next)=> {
         return next(new ErrorHandler("Failed to upload image top cloudinary",400));
     }
     const contest=await Contest.create({
-        title,description,date,contestPicture:{
+        clubId:id,title,description,date,contestPicture:{
             public_id:cloudinaryResponse.public_id,
             url:cloudinaryResponse.secure_url
-        },clubId:id
+        }
     });
     res.status(201).json({
         success:true,
@@ -43,9 +47,16 @@ export const createContest = catchAsyncError(async (req,res,next)=> {
 })
 
 export const updateContest = catchAsyncError(async (req,res,next)=> {
+    const {clubid}=req.params;
     const {id}=req.params;
+    console.log(id+" "+" ");
     if(!mongoose.Types.ObjectId.isValid(id))
         return next(new ErrorHandler("Id format is invalid",400));
+    if(!mongoose.Types.ObjectId.isValid(clubid))
+        return next(new ErrorHandler("ClubId format is invalid",400));
+    const club = await Club.findById(clubid);
+    if(!club.clubLead.equals(req.user._id))
+        return next(new ErrorHandler("You cannot update club",400));
     const contest=await Contest.findByIdAndUpdate(id,req.body,{
         new :true,
         runValidators :true,
@@ -59,9 +70,13 @@ export const updateContest = catchAsyncError(async (req,res,next)=> {
 })
 
 export const deleteContest = catchAsyncError(async (req,res,next)=>{
+    const {clubid}=req.params;
     const {id}=req.params;
     if(!mongoose.Types.ObjectId.isValid(id))
         return next(new ErrorHandler("Id format is invalid",400));
+    const club = await Club.findById(clubid);
+    if(!club.clubLead.equals(req.user._id))
+        return next(new ErrorHandler("You cannot update club",400));
     const contest=await Contest.findById(id);
     if(!contest)
         return next(new ErrorHandler("Contest not Found",404));
@@ -156,4 +171,4 @@ export const pastContest=catchAsyncError(async(req,res,next) =>{
         message:"Completed contests are fetched",
         contests
     });
-})
+});

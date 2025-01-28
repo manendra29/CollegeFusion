@@ -9,7 +9,7 @@ router.delete("/delete/:id",isAuthenticated,deletePost);
 router.put("/like/:id",isAuthenticated,like);
 router.put("/unlike/:id",isAuthenticated,unLike);
 router.put("/comment/:id",isAuthenticated,commentPost);
-router.put("/comment/:postId/:id",isAuthenticated,deleteComment);
+router.put("/deletecomment/:postId/:id",isAuthenticated,deleteComment);
 
 
 export default router;

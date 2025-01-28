@@ -1,0 +1,105 @@
+/* ClubMembersPage.css */
+.club-members-container {
+    padding: 2rem;
+    background-color: #f4f6f9;
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  }
+  
+  .page-header {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .page-header h1 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    font-size: 2.5rem;
+  }
+  
+  .search-input {
+    max-width: 600px;
+    margin: 0 auto;
+    display: block;
+  }
+  
+  .members-grid {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  .member-card {
+    transition: all 0.3s ease;
+    height: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .member-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .member-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem !important;
+  }
+  
+  .member-avatar-container {
+    margin-bottom: 1rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid #3f51b5;
+    width: 200px;
+    height: 200px;
+  }
+  
+  .member-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  .member-name {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+  }
+  
+  .member-role {
+    color: #7f8c8d;
+    font-size: 1rem;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 600px) {
+    .club-members-container {
+      padding: 1rem;
+    }
+  
+    .page-header h1 {
+      font-size: 2rem;
+    }
+  
+    .member-avatar-container {
+      width: 150px;
+      height: 150px;
+    }
+  
+    .members-grid {
+      flex-direction: column;
+      align-items: center;
+    }
+  }
+  
+  @media (min-width: 601px) and (max-width: 900px) {
+    .member-avatar-container {
+      width: 180px;
+      height: 180px;
+    }
+  }

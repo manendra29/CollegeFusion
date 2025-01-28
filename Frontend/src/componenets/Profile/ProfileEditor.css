@@ -1,0 +1,83 @@
+/* Common styles for both profile editors */
+.profile-container {
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: #f5f5f5;
+  }
+  
+  .profile-card {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+  }
+  
+  .profile-header {
+    margin-bottom: 2rem;
+  }
+  
+  .profile-title {
+    font-size: 2rem;
+    color: #1976d2;
+    margin-bottom: 1rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .input-with-icon {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .icon-wrapper {
+    display: flex;
+    align-items: center;
+    color: #666;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .profile-container {
+      padding: 1rem;
+    }
+    
+    .profile-card {
+      padding: 1rem;
+    }
+    
+    .profile-title {
+      font-size: 1.5rem;
+    }
+  }
+  
+  /* Custom styles for club profile */
+  .description-field {
+    min-height: 100px;
+    width: 100%;
+    resize: vertical;
+  }
+  
+  /* Custom button styles */
+  .submit-button {
+    margin-top: 2rem;
+  }
+  
+  /* Error message styles */
+  .error-message {
+    color: #d32f2f;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  /* Success message styles */
+  .success-message {
+    color: #2e7d32;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+  }
